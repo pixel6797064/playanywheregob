@@ -1,0 +1,27 @@
+{
+  "name": "repo",
+  "version": "1.0.0",
+  "description": "i DID NOT make this, claude made it cuz idk how to code but enjoy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixel6797064/playanywheregob.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/pixel6797064/playanywheregob/issues"
+  },
+  "homepage": "https://github.com/pixel6797064/playanywheregob#readme",
+  "dependencies": {
+    "@netlify/database": "^2.0.1",
+    "@netlify/identity": "^2.0.0",
+    "drizzle-orm": "^1.0.0-beta.22"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^6.1.0",
+    "drizzle-kit": "^1.0.0-beta.22"
+  },
+  "private": true
+}
