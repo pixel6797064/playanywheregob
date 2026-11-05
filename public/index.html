@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anywhere Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f1fb;--bg2:#e9e4fb;--sf:#ffffff;--sf2:#f7f5fe;--ink:#17133a;--mut:#5f5a8a;--line:#dedaf2;--acc:#5a3df0;--acc2:#e0409b;--accink:#fff;--play:#0b8f68;--playink:#fff;--err:#c62a47;--shadow:0 1px 2px rgba(23,19,58,.06),0 8px 24px -12px rgba(23,19,58,.22);--glow:rgba(90,61,240,.18);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0d22;--bg2:#1a1640;--sf:#1b1838;--sf2:#221e46;--ink:#f1efff;--mut:#a7a3d2;--line:#322e62;--acc:#9583ff;--acc2:#ff6ab8;--accink:#120f2b;--play:#34d5a2;--playink:#05261b;--err:#ff8aa1;--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 14px 34px -16px rgba(0,0,0,.7);--glow:rgba(149,131,255,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f0d22;--bg2:#1a1640;--sf:#1b1838;--sf2:#221e46;--ink:#f1efff;--mut:#a7a3d2;--line:#322e62;--acc:#9583ff;--acc2:#ff6ab8;--accink:#120f2b;--play:#34d5a2;--playink:#05261b;--err:#ff8aa1;--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 14px 34px -16px rgba(0,0,0,.7);--glow:rgba(149,131,255,.22);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100vh;color:var(--ink);font:400 16px/1.5 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(900px 480px at 85% -10%,var(--glow),transparent 70%),radial-gradient(700px 420px at -10% 10%,color-mix(in srgb,var(--acc2) 14%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(color-mix(in srgb,var(--ink) 10%,transparent) 1px,transparent 1px);background-size:22px 22px;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 55%);mask-image:linear-gradient(to bottom,#000,transparent 55%)}
+main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:28px 20px 64px}
+h1,h2,h3{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;line-height:1.05;margin:0}
+header{padding:8px 0 6px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:28px}
+.logo{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 6px 16px -6px var(--acc)}
+.logo svg{width:14px;height:14px;margin-left:2px}
+h1{font-size:clamp(2.8rem,10vw,5.2rem);font-weight:800;letter-spacing:-.045em}
+h1 em{font-style:normal;background:linear-gradient(100deg,var(--acc) 10%,var(--acc2) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.04em}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
+.top .brand{margin-bottom:0}
+.acct{display:flex;align-items:center;gap:10px;min-width:0}
+.ghost.sm{min-height:40px;padding:8px 14px;border-radius:12px;font-size:.9rem}
+.who{display:flex;align-items:center;gap:8px;min-width:0;font-weight:600;font-size:.9rem}
+.who .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:16ch}
+.av{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;object-fit:cover;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:700;font-size:.85rem}
+@media(max-width:480px){.who .nm{display:none}}
+.st.off::before{background:var(--mut);box-shadow:0 0 0 3px color-mix(in srgb,var(--mut) 22%,transparent)}
+.oauth{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:50px;border:1px solid var(--line);border-radius:14px;background:var(--bg);font-weight:700;cursor:pointer;transition:border-color .15s,background .15s}
+.oauth:hover{border-color:color-mix(in srgb,var(--acc) 50%,var(--line));background:var(--sf2)}
+.oauth svg{width:20px;height:20px}
+.or{display:flex;align-items:center;gap:12px;margin:18px 0 14px;color:var(--mut);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.or[hidden],.oauth[hidden],label[hidden]{display:none}
+.lead{margin:-8px 0 18px;font-size:.92rem}
+.swap{margin:16px 0 0;text-align:center;color:var(--mut);font-size:.9rem}
+.link{background:none;border:0;padding:4px;color:var(--acc);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.btn:disabled{opacity:.6;cursor:default;transform:none}
+.sub{margin:14px 0 24px;color:var(--mut);max-width:40ch;font-size:1.05rem}
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.st{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;color:var(--mut);padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--sf) 70%,transparent);backdrop-filter:blur(6px)}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--play);box-shadow:0 0 0 3px color-mix(in srgb,var(--play) 25%,transparent)}
+button,select,input{font:inherit;color:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 70%,var(--acc2)));color:#fff;border:0;border-radius:14px;padding:12px 22px;font-weight:700;cursor:pointer;min-height:48px;box-shadow:0 10px 24px -10px var(--acc),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s ease,box-shadow .15s ease,filter .15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 14px 28px -10px var(--acc),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn:active{transform:translateY(1px) scale(.98)}
+#addBtn::before,.empty .btn::before{content:"+";font-size:1.3em;line-height:0;font-weight:600;margin-top:-2px}
+.ghost{background:var(--sf);border:1px solid var(--line);border-radius:14px;padding:12px 20px;min-height:48px;cursor:pointer;font-weight:600;transition:background .15s,border-color .15s}
+.ghost:hover{border-color:color-mix(in srgb,var(--acc) 50%,var(--line));background:var(--sf2)}
+#chips{display:flex;gap:8px;overflow-x:auto;margin:40px 0 0;padding:2px 2px 6px;scrollbar-width:none}
+#chips::-webkit-scrollbar{display:none}
+#chips:empty{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--sf);border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--mut);transition:color .15s,border-color .15s,background .15s}
+.chip:hover{color:var(--ink);border-color:color-mix(in srgb,var(--acc) 45%,var(--line))}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:18px;margin-top:22px}
+#chips:empty+.grid{margin-top:40px}
+.tile{position:relative;background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:10px 10px 6px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s,border-color .2s;animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+.tile:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--acc) 35%,var(--line));box-shadow:var(--shadow),0 20px 40px -18px var(--glow)}
+.grid>.tile:nth-child(2){animation-delay:.04s}.grid>.tile:nth-child(3){animation-delay:.08s}.grid>.tile:nth-child(4){animation-delay:.12s}.grid>.tile:nth-child(5){animation-delay:.16s}.grid>.tile:nth-child(n+6){animation-delay:.2s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.art{position:relative;overflow:hidden;aspect-ratio:4/3;border-radius:14px;background:radial-gradient(120% 90% at 100% 0%,hsl(calc(var(--h) + 40) 90% 66% / .9),transparent 55%),linear-gradient(140deg,hsl(var(--h) 78% 56%),hsl(calc(var(--h) + 55) 72% 30%));color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:12px;isolation:isolate}
+.art::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.09) 0 2px,transparent 2px 12px);-webkit-mask-image:linear-gradient(to top left,#000,transparent 70%);mask-image:linear-gradient(to top left,#000,transparent 70%)}
+.art::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(0,0,0,.28),transparent 50%)}
+.art b{font:800 3.6rem/.9 "Bricolage Grotesque",sans-serif;letter-spacing:-.04em;text-shadow:0 6px 20px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.2,.8,.2,1);transform-origin:left top}
+.tile:hover .art b{transform:scale(1.08) rotate(-3deg)}
+.art span{align-self:flex-start;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.28);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18)}
+.tile h3{font-size:1.1rem;font-weight:700;letter-spacing:-.01em;overflow-wrap:anywhere;padding:0 4px}
+.play{display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;text-decoration:none;background:var(--play);color:var(--playink);font-weight:700;border-radius:12px;padding:11px;min-height:44px;transition:filter .15s,transform .15s}
+a.play::before,button.play:not(:disabled)::before{content:"";width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent currentColor}
+.play:hover{filter:brightness(1.08)}
+.play:active{transform:scale(.98)}
+.rm{align-self:center;background:none;border:0;color:var(--mut);font-size:.78rem;padding:6px 10px;cursor:pointer;min-height:32px;border-radius:8px;opacity:.75;transition:opacity .15s,color .15s}
+.rm:hover{opacity:1;color:var(--err)}
+.bad{color:var(--mut);font-size:.85rem;text-align:center;padding:11px;border:1px dashed var(--line);border-radius:12px}
+.empty{grid-column:1/-1;position:relative;overflow:hidden;border:1.5px dashed color-mix(in srgb,var(--acc) 35%,var(--line));border-radius:24px;padding:44px 28px;background:linear-gradient(135deg,color-mix(in srgb,var(--sf) 85%,transparent),color-mix(in srgb,var(--sf2) 60%,transparent));animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.empty::after{content:"";position:absolute;right:-40px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
+.empty h2{font-size:clamp(1.6rem,5vw,2.2rem);letter-spacing:-.03em}
+.empty p{color:var(--mut);max-width:44ch;margin:10px 0 22px}
+dialog{width:min(100%,520px);max-width:none;margin:auto auto 0;border:1px solid var(--line);border-radius:24px 24px 0 0;background:var(--sf);color:var(--ink);padding:26px 22px calc(22px + env(safe-area-inset-bottom,0px));box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+dialog[open]{animation:sheet .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheet{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@media(min-width:640px){dialog{margin:auto;border-radius:24px;padding:30px 28px 24px}}
+dialog::backdrop{background:rgba(12,10,32,.55);backdrop-filter:blur(4px)}
+dialog h2{font-size:1.7rem;letter-spacing:-.03em;margin-bottom:18px}
+label{display:block;font-weight:600;font-size:.92rem;margin-bottom:14px}
+input,select{display:block;width:100%;margin-top:6px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-weight:400;font-size:1rem;min-height:48px;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 20%,transparent)}
+input[type=file]{padding:10px;border-style:dashed;cursor:pointer}
+input[type=file]::file-selector-button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:6px 12px;margin-right:10px;background:var(--sf2);color:var(--ink);cursor:pointer}
+.hint{color:var(--mut);font-size:.84rem;margin:-6px 0 14px}
+.err{color:var(--err);min-height:1.2em;margin:0 0 10px;font-size:.9rem}
+.row{display:flex;gap:10px;justify-content:flex-end}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button.play{border:0;width:100%;cursor:pointer;font-size:1rem}
+.play:disabled{opacity:.55;cursor:default;background:var(--sf2);color:var(--mut);font-weight:600;font-size:.85rem}
+#stage{position:fixed;inset:0;z-index:10;background:#000;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#stage[hidden]{display:none}
+.sbar{display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--sf);border-bottom:1px solid var(--line)}
+.sbar .ghost{min-height:40px;padding:8px 14px;border-radius:10px}
+.sbar span{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#frame{flex:1;width:100%;border:0;background:#fff}
+.sbar small{color:var(--mut);font-size:.8rem;margin-left:auto}
+@media(max-width:420px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}.art b{font-size:2.8rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script></head>
+<body>
+<main>
+<header>
+<div class="top"><div class="brand"><span class="logo" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7-12 7z" fill="currentColor"/></svg></span>Anywhere Play</div><div id="acct" class="acct"><button class="ghost sm" id="signBtn" hidden>Sign in</button></div></div>
+<h1>Play <em>anywhere.</em></h1>
+<p class="sub">Add a game, then tap Play. Sign in to keep your games in your account, on every device.</p>
+<div class="bar"><button class="btn" id="addBtn">Add a game</button><span class="st off" id="st" aria-live="polite">Loading…</span></div>
+</header>
+<nav id="chips" aria-label="Filter by platform"></nav>
+<section class="grid" id="grid" aria-live="polite"></section>
+</main>
+<dialog id="dlg"><form id="f">
+<h2>Add a game</h2>
+<label>Title<input id="t" required maxlength="60" autocomplete="off"></label>
+<label>Where it runs<select id="w"></select></label>
+<label>Play link<input id="u" inputmode="url" autocapitalize="off" autocomplete="off"></label>
+<p class="hint" id="hint"></p>
+<label>Or add game files<input id="fl" type="file" multiple></label>
+<p class="hint">Plays HTML5 games from an .html file, a .zip, or loose files. They stay in this browser.</p>
+<p class="err" id="err" role="alert"></p>
+<div class="row"><button type="button" class="ghost" id="cx">Cancel</button><button class="btn">Add game</button></div>
+</form></dialog>
+<dialog id="adlg" aria-labelledby="ah"><form id="af" novalidate>
+<h2 id="ah">Sign in</h2>
+<p class="hint lead" id="alead">Sign in to save your games to your account, so they show up on any device.</p>
+<button type="button" class="oauth" id="gBtn" hidden><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
+<div class="or" id="orLine" hidden><span>or use email</span></div>
+<label id="anl" hidden>Name<input id="an" autocomplete="name" maxlength="60"></label>
+<label>Email<input id="ae" type="email" autocomplete="email" required></label>
+<label>Password<input id="ap" type="password" autocomplete="current-password" minlength="6" required></label>
+<p class="err" id="aerr" role="alert"></p>
+<div class="row"><button type="button" class="ghost" id="acx">Cancel</button><button class="btn" id="ago">Sign in</button></div>
+<p class="swap"><span id="aq">New here?</span> <button type="button" class="link" id="amode">Create an account</button></p>
+</form></dialog>
+<div id="stage" hidden><div class="sbar"><button class="ghost" id="back">Close</button><span id="stitle"></span><small id="shint" hidden>Blank screen? That site doesn’t allow being shown here.</small></div><iframe id="frame" title="Game" sandbox="allow-scripts allow-pointer-lock allow-forms" allow="autoplay; fullscreen; gamepad"></iframe></div>
+<script>
+const $=i=>document.getElementById(i);
+const h=(t,a={},...c)=>{const e=document.createElement(t);for(const k in a){if(k==='class')e.className=a[k];else if(k.startsWith('on'))e.addEventListener(k.slice(2),a[k]);else e.setAttribute(k,a[k])}e.append(...c);return e};
+const HOSTS={pc:['My PC (Moonlight)','The address of your streaming page or app link'],steam:['Steam Link','e.g. steam://rungameid/1091500'],parsec:['Parsec','Your Parsec link, e.g. https://web.parsec.app'],gfn:['GeForce NOW','e.g. https://play.geforcenow.com'],xcloud:['Xbox Cloud Gaming','e.g. https://www.xbox.com/play'],web:['Browser game','The game’s web address'],other:['Other','Any http or https link'],file:['Files on this device','']};
+const OK=['http:','https:','steam:','parsec:','moonlight:'];
+const LS='anywhere-play:games';
+let games=[],user=null,filter='all';
+const ID=import('https://esm.sh/@netlify/identity@2.0.0');
+const newId=()=>'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const lsGet=()=>{try{return JSON.parse(localStorage.getItem(LS)||'[]')}catch(e){return[]}};
+const lsSet=()=>{try{localStorage.setItem(LS,JSON.stringify(games))}catch(e){}};
+const st=(m,on)=>{$('st').textContent=m;$('st').classList.toggle('off',!on)};
+const hue=s=>{let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))%360;return x};
+function okUrl(s){s=s.trim();if(!/^[a-z][a-z0-9+.-]*:/i.test(s))s='https://'+s;try{const u=new URL(s);return OK.includes(u.protocol)?u.href:null}catch(e){return null}}
+async function api(method,body,q=''){
+ const r=await fetch('/api/games'+q,{method,credentials:'same-origin',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined});
+ if(r.status===401){signedOut();throw new Error('auth')}
+ if(!r.ok)throw new Error('http '+r.status);
+ return r.json();
+}
+async function add(g){
+ g={...g,id:g.id||newId()};games.unshift(g);render();
+ if(user){try{await api('POST',g)}catch(e){games=games.filter(x=>x!==g);render();st('Could not save to your account. Try again.',1)}}else lsSet();
+}
+async function del(id){
+ idbDel(id);const old=games;games=games.filter(x=>x.id!==id);render();
+ if(user){try{await api('DELETE',null,'?id='+encodeURIComponent(id))}catch(e){games=old;render();st('Could not remove. Try again.',1)}}else lsSet();
+}
+function tile(g){
+ const u=okUrl(g.url||''),web=u&&/^https?:/.test(u),name=g.title||'';
+ const art=h('div',{class:'art'},h('b',{},name.trim().charAt(0).toUpperCase()||'?'),h('span',{},(HOSTS[g.host]||HOSTS.other)[0]));
+ art.style.setProperty('--h',hue(name));
+ let armed=0;
+ const rm=h('button',{class:'rm',onclick:()=>{if(!armed){armed=1;rm.textContent='Tap again to remove';setTimeout(()=>{armed=0;rm.textContent='Remove'},3000)}else del(g.id)}},'Remove');
+ let play;if(g.local){play=h('button',{class:'play',onclick:()=>playLocal(g,play)},'Play');idbHas(g.id).then(ok=>{if(!ok){play.disabled=true;play.textContent='Files not on this device'}})}else if(web)play=h('button',{class:'play',onclick:()=>showGame(g.title,{src:u})},'Play');else play=u?h('a',{class:'play',href:u},'Play'):h('span',{class:'bad'},'Link is not valid');
+ return h('article',{class:'tile'},art,h('h3',{},name),play,rm);
+}
+const empty=()=>h('div',{class:'empty'},h('h2',{},'No games yet'),h('p',{},'Add a game with the link that launches it: a Steam, Parsec, GeForce NOW or browser-game address.'),h('button',{class:'btn',onclick:openDlg},'Add your first game'));
+function render(){
+ const hs=[...new Set(games.map(g=>g.host))];
+ if(filter!=='all'&&!hs.includes(filter))filter='all';
+ $('chips').replaceChildren(...(hs.length>1?['all',...hs]:[]).map(k=>h('button',{class:'chip'+(k===filter?' on':''),'aria-pressed':String(k===filter),onclick:()=>{filter=k;render()}},k==='all'?'All':(HOSTS[k]||HOSTS.other)[0])));
+ const list=games.filter(g=>filter==='all'||g.host===filter);
+ $('grid').replaceChildren(...(games.length?list.map(tile):[empty()]));
+}
+function hint(){$('hint').textContent=HOSTS[$('w').value][1]}
+function openDlg(){$('f').reset();$('w').value='pc';hint();$('err').textContent='';$('dlg').showModal();$('t').focus()}
+for(const k in HOSTS)if(k!=='file')$('w').append(h('option',{value:k},HOSTS[k][0]));
+$('w').onchange=hint;
+$('addBtn').onclick=openDlg;
+$('cx').onclick=()=>$('dlg').close();
+$('f').onsubmit=async e=>{e.preventDefault();if($('fl').files.length)return submitFiles();const url=okUrl($('u').value);if(!url){$('err').textContent='Enter a valid play link, or choose game files.';return}
+ const g={title:$('t').value.trim(),host:$('w').value,url,added:Date.now()};$('dlg').close();await add(g)};
+async function loadAccount(u){
+ user=u;showAcct();st('Loading your games…',1);
+ try{
+  const loc=lsGet();
+  if(loc.length){await api('POST',loc.map(g=>({...g,id:g.id||newId(),local:!!g.local})));localStorage.removeItem(LS)}
+  games=await api('GET');render();st('Saved to your account',1);
+ }catch(e){if(user){games=lsGet();render();st('Could not reach your account. Showing games from this browser.')}}
+}
+function signedOut(){user=null;showAcct();games=lsGet();render();st('Saved in this browser only. Sign in to save to your account.')}
+function showAcct(){
+ const a=$('acct');
+ if(!user){a.replaceChildren($('signBtn'));$('signBtn').hidden=false;return}
+ const nm=(user.name||user.email||'Account'),ini=nm.trim().charAt(0).toUpperCase();
+ const av=user.pictureUrl?h('img',{class:'av',src:user.pictureUrl,alt:'',referrerpolicy:'no-referrer'}):h('span',{class:'av'},ini);
+ a.replaceChildren($('signBtn'),h('span',{class:'who',title:user.email||''},av,h('span',{class:'nm'},nm)),h('button',{class:'ghost sm',onclick:doSignOut},'Sign out'));
+ $('signBtn').hidden=true;
+}
+async function doSignOut(){try{const I=await ID;await I.logout()}catch(e){}signedOut()}
+let mode='in',idSet=null;
+function setMode(m){
+ mode=m;const up=m==='up';
+ $('ah').textContent=up?'Create an account':'Sign in';$('ago').textContent=up?'Create account':'Sign in';
+ $('aq').textContent=up?'Already have an account?':'New here?';$('amode').textContent=up?'Sign in':'Create an account';
+ $('anl').hidden=!up;$('ap').autocomplete=up?'new-password':'current-password';$('aerr').textContent='';
+}
+async function openAuth(){
+ $('af').reset();setMode('in');$('adlg').showModal();
+ try{const I=await ID;idSet=idSet||await I.getSettings();const g=!!(idSet.providers&&idSet.providers.google);$('gBtn').hidden=!g;$('orLine').hidden=!g;$('amode').parentNode.hidden=!!idSet.disableSignup}catch(e){}
+}
+const authMsg=e=>{const s=e&&e.status,m=(e&&e.message)||'';if(/confirm/i.test(m))return'Confirm your email first. Check your inbox for the link.';if(s===401||s===400)return'That email and password don’t match.';if(s===403)return'New accounts are turned off for this site.';if(s===422)return m||'Check your email and password. Passwords need at least 6 characters.';if(e&&e.name==='MissingIdentityError')return'Accounts aren’t switched on for this site yet.';return m||'Something went wrong. Try again.'};
+$('signBtn').onclick=openAuth;
+$('acx').onclick=()=>$('adlg').close();
+$('amode').onclick=()=>setMode(mode==='in'?'up':'in');
+$('gBtn').onclick=async()=>{try{const I=await ID;I.oauthLogin('google')}catch(e){$('aerr').textContent=authMsg(e)}};
+$('af').onsubmit=async e=>{
+ e.preventDefault();const em=$('ae').value.trim(),pw=$('ap').value;
+ if(!em||!pw){$('aerr').textContent='Enter your email and password.';return}
+ const b=$('ago');b.disabled=true;$('aerr').textContent='';
+ try{const I=await ID;
+  if(mode==='up'){const u=await I.signup(em,pw,{full_name:$('an').value.trim()});
+   if(!u.emailVerified){$('aerr').textContent='';$('alead').textContent='Check your email and tap the link to finish creating your account.';setMode('in');return}
+   $('adlg').close();await loadAccount(u)}
+  else{const u=await I.login(em,pw);$('adlg').close();await loadAccount(u)}
+ }catch(x){$('aerr').textContent=authMsg(x)}finally{b.disabled=false}
+};
+async function boot(){
+ games=lsGet();render();st('Saved in this browser only. Sign in to save to your account.');
+ let I;try{I=await ID}catch(e){st('Saved in this browser only.');return}
+ try{const r=await I.handleAuthCallback();if(r&&r.user){history.replaceState(null,'',location.pathname+location.search);return loadAccount(r.user)}}catch(e){st(authMsg(e))}
+ const u=await I.getUser();if(u)await loadAccount(u);else signedOut();
+ I.onAuthChange((ev,u)=>{if(ev==='logout'&&user)signedOut();else if(ev==='login'&&u&&!user)loadAccount(u)});
+}
+let dbp;const idb=()=>dbp||(dbp=new Promise((ok,no)=>{const r=indexedDB.open('anywhere-play',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}));
+const idbDo=async(mode,fn)=>{const d=await idb();return new Promise((ok,no)=>{const t=d.transaction('f',mode),q=fn(t.objectStore('f'));t.oncomplete=()=>ok(q&&q.result);t.onerror=t.onabort=()=>no(t.error)})};
+const idbPut=(k,v)=>idbDo('readwrite',s=>s.put(v,k));
+const idbDel=k=>idbDo('readwrite',s=>s.delete(k)).catch(()=>{});
+const idbGet=k=>idbDo('readonly',s=>s.get(k));
+const idbHas=k=>idbDo('readonly',s=>s.getKey(k)).then(r=>r!==undefined,()=>false);
+const MT={js:'text/javascript',css:'text/css',json:'application/json',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',svg:'image/svg+xml',mp3:'audio/mpeg',ogg:'audio/ogg',wav:'audio/wav',mp4:'video/mp4',webm:'video/webm',woff:'font/woff',woff2:'font/woff2',ttf:'font/ttf',otf:'font/otf'};
+const mime=p=>MT[p.split('.').pop().toLowerCase()]||'application/octet-stream';
+const SHIM="try{localStorage.getItem('k')}catch(e){(function(){var m={},s={getItem:function(k){return k in m?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};Object.defineProperty(s,'length',{get:function(){return Object.keys(m).length}});['localStorage','sessionStorage'].forEach(function(n){Object.defineProperty(window,n,{value:s,configurable:true})})})()}";
+async function readFiles(files){
+ const out=[];let size=0;
+ for(const f of files){
+  size+=f.size;if(size>250*1024*1024)throw new Error('Too big. Keep the files under 250 MB in total.');
+  const n=f.name.toLowerCase();
+  if(/\.(rar|7z)$/.test(n))throw new Error('Can’t unpack .rar or .7z here. Re-save it as .zip and add it again.');
+  if(n.endsWith('.zip')){
+   if(!window.JSZip)throw new Error('Zip support didn’t load. Reload the page and try again.');
+   const z=await JSZip.loadAsync(f);
+   for(const k in z.files){const e=z.files[k];if(!e.dir&&!/(^|\/)(__MACOSX|\.DS_Store)/.test(k))out.push({p:k,b:await e.async('arraybuffer')})}
+  }else out.push({p:f.webkitRelativePath||f.name,b:await f.arrayBuffer()});
+ }
+ if(!out.some(e=>/\.html?$/i.test(e.p)))throw new Error('No .html file found. This page plays HTML5 games: add an .html file or a .zip that contains one.');
+ return out;
+}
+async function build(ent){
+ const map=new Map(),by=new Map(),dec=new TextDecoder();
+ for(const e of ent){const k=e.p.toLowerCase();map.set(k,e);const n=k.split('/').pop();if(!by.has(n))by.set(n,e)}
+ const idx=e=>/(^|\/)index\.html?$/i.test(e.p)?0:1;
+ const main=ent.filter(e=>/\.html?$/i.test(e.p)).sort((a,b)=>idx(a)-idx(b)||a.p.split('/').length-b.p.split('/').length)[0];
+ const dir=p=>p.slice(0,p.lastIndexOf('/')+1);
+ const look=(base,ref)=>{if(!ref||/^(data:|blob:|https?:|\/\/|#)/i.test(ref))return null;let r=ref.split(/[?#]/)[0];try{r=decodeURIComponent(r)}catch(x){}const out=[];for(const s of(r.startsWith('/')?r:base+r).split('/')){if(s==='..')out.pop();else if(s&&s!=='.')out.push(s)}return map.get(out.join('/').toLowerCase())||by.get((out[out.length-1]||'').toLowerCase())||null};
+ const uri=e=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(new Blob([e.b],{type:mime(e.p)}))});
+ const css=async(t,base)=>{for(const m of[...t.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g)]){const e=look(base,m[2]);if(e)t=t.replace(m[0],'url('+await uri(e)+')')}return t};
+ const doc=new DOMParser().parseFromString(dec.decode(main.b),'text/html'),base=dir(main.p);
+ for(const s of[...doc.querySelectorAll('script[src]')]){const e=look(base,s.getAttribute('src'));if(!e)continue;const n=doc.createElement('script');if(s.type)n.type=s.type;n.textContent=dec.decode(e.b).replace(/<\/script/gi,'<\\/script');s.replaceWith(n)}
+ for(const l of[...doc.querySelectorAll('link[rel~=stylesheet][href]')]){const e=look(base,l.getAttribute('href'));if(!e)continue;const n=doc.createElement('style');n.textContent=await css(dec.decode(e.b),dir(e.p));l.replaceWith(n)}
+ for(const el of[...doc.querySelectorAll('img[src],audio[src],video[src],source[src],link[rel~=icon][href]')]){const a=el.hasAttribute('src')?'src':'href',e=look(base,el.getAttribute(a));if(e)el.setAttribute(a,await uri(e))}
+ const sh=doc.createElement('script');sh.textContent=SHIM;doc.head.prepend(sh);
+ return'<!doctype html>'+doc.documentElement.outerHTML;
+}
+async function submitFiles(){
+ const g={title:$('t').value.trim(),host:'file',local:1,added:Date.now()};
+ $('err').textContent='Adding…';
+ try{const ent=await readFiles([...$('fl').files]);
+  g.id=newId();await idbPut(g.id,ent);$('dlg').close();await add(g)}
+ catch(e){$('err').textContent=(e&&e.message)||'Could not save. Your browser may be out of space.'}
+}
+async function playLocal(g,btn){
+ const old=btn.textContent;
+ try{const ent=await idbGet(g.id);showGame(g.title,{doc:await build(ent)})}
+ catch(e){btn.textContent='Could not open';setTimeout(()=>{btn.textContent=old},3000)}
+}
+$('fl').onchange=()=>{const f=$('fl').files[0];if(f&&!$('t').value)$('t').value=f.name.replace(/\.[^.]+$/,'')};
+$('back').onclick=()=>{$('frame').removeAttribute('src');$('frame').srcdoc='';$('stage').hidden=true};
+function showGame(t,o){
+ const f=$('frame'),web=o.doc===undefined;
+ f.removeAttribute('src');f.removeAttribute('srcdoc');
+ f.setAttribute('sandbox',web?'allow-scripts allow-same-origin allow-pointer-lock allow-forms':'allow-scripts allow-pointer-lock allow-forms');
+ if(web)f.src=o.src;else f.srcdoc=o.doc;
+ $('stitle').textContent=t||'';$('shint').hidden=!web;$('stage').hidden=false;f.focus();
+}
+document.addEventListener('securitypolicyviolation',e=>{if(!$('stage').hidden&&/frame|child/.test(e.effectiveDirective||e.violatedDirective))$('stitle').textContent='Blocked: this page can’t show that site.'});
+boot();
+</script>
+</body></html>
