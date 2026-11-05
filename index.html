@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anywhere Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1effa;--sf:#fff;--ink:#1c1840;--mut:#625e8c;--line:#dcd8f0;--acc:#5a3df0;--accink:#fff;--play:#0b8f68;--playink:#fff;--err:#c62a47;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14122b;--sf:#1f1c3f;--ink:#efedff;--mut:#a9a5d4;--line:#38346c;--acc:#8f7bff;--accink:#14122b;--play:#34d5a2;--playink:#06281d;--err:#ff8aa1;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14122b;--sf:#1f1c3f;--ink:#efedff;--mut:#a9a5d4;--line:#38346c;--acc:#8f7bff;--accink:#14122b;--play:#34d5a2;--playink:#06281d;--err:#ff8aa1;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:960px;margin:0 auto;padding:28px 18px 48px}
+h1,h2,h3{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;line-height:1.1;margin:0}
+h1{font-size:clamp(2.4rem,9vw,4rem);font-weight:800;letter-spacing:-.03em}
+.sub{margin:10px 0 18px;color:var(--mut);max-width:36ch}
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.st{font-size:.85rem;color:var(--mut)}
+button,select,input{font:inherit;color:inherit}
+.btn{background:var(--acc);color:var(--accink);border:0;border-radius:12px;padding:12px 20px;font-weight:600;cursor:pointer;min-height:48px}
+.ghost{background:none;border:1px solid var(--line);border-radius:12px;padding:12px 20px;min-height:48px;cursor:pointer}
+#chips{display:flex;gap:8px;overflow-x:auto;margin:22px 0 4px;padding-bottom:4px}
+#chips:empty{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--sf);border-radius:999px;padding:8px 16px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:18px}
+.tile{background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:10px}
+.art{aspect-ratio:4/3;border-radius:10px;background:linear-gradient(135deg,hsl(var(--h) 72% 54%),hsl(calc(var(--h) + 55) 70% 36%));color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:10px}
+.art b{font:800 3.2rem/1 "Bricolage Grotesque",sans-serif}
+.art span{font-size:.75rem;font-weight:600}
+.tile h3{font-size:1.05rem;overflow-wrap:anywhere}
+.play{display:block;text-align:center;text-decoration:none;background:var(--play);color:var(--playink);font-weight:700;border-radius:10px;padding:11px;min-height:44px}
+.rm{background:none;border:0;color:var(--mut);font-size:.8rem;padding:6px;cursor:pointer;min-height:32px}
+.bad{color:var(--mut);font-size:.85rem}
+.empty{grid-column:1/-1;border:2px dashed var(--line);border-radius:16px;padding:28px 20px}
+.empty p{color:var(--mut);max-width:42ch;margin:8px 0 18px}
+dialog{width:min(100%,520px);max-width:none;margin:auto auto 0;border:0;border-radius:20px 20px 0 0;background:var(--sf);color:var(--ink);padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
+@media(min-width:640px){dialog{margin:auto;border-radius:20px}}
+dialog::backdrop{background:rgba(20,18,43,.55)}
+dialog h2{font-size:1.5rem;margin-bottom:14px}
+label{display:block;font-weight:600;margin-bottom:12px}
+input,select{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-weight:400;min-height:48px}
+.hint{color:var(--mut);font-size:.85rem;margin:-4px 0 12px}
+.err{color:var(--err);min-height:1.2em;margin:0 0 8px}
+.row{display:flex;gap:10px;justify-content:flex-end}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button.play{border:0;width:100%;cursor:pointer}
+.play:disabled{opacity:.6;cursor:default}
+#stage{position:fixed;inset:0;z-index:10;background:#000;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#stage[hidden]{display:none}
+.sbar{display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--sf)}
+.sbar span{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#frame{flex:1;width:100%;border:0;background:#fff}
+.sbar small{color:var(--mut);font-size:.8rem;margin-left:auto}
+</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script></head>
+<body>
+<main>
+<header>
+<h1>Play anywhere</h1>
+<p class="sub">Add a game, then tap Play. Your games are saved in this browser.</p>
+<div class="bar"><button class="btn" id="addBtn">Add a game</button><span class="st" id="st">Connecting…</span></div>
+</header>
+<nav id="chips" aria-label="Filter by platform"></nav>
+<section class="grid" id="grid" aria-live="polite"></section>
+</main>
+<dialog id="dlg"><form id="f">
+<h2>Add a game</h2>
+<label>Title<input id="t" required maxlength="60" autocomplete="off"></label>
+<label>Where it runs<select id="w"></select></label>
+<label>Play link<input id="u" inputmode="url" autocapitalize="off" autocomplete="off"></label>
+<p class="hint" id="hint"></p>
+<label>Or add game files<input id="fl" type="file" multiple></label>
+<p class="hint">Plays HTML5 games from an .html file, a .zip, or loose files. They stay in this browser.</p>
+<p class="err" id="err" role="alert"></p>
+<div class="row"><button type="button" class="ghost" id="cx">Cancel</button><button class="btn">Add game</button></div>
+</form></dialog>
+<div id="stage" hidden><div class="sbar"><button class="ghost" id="back">Close</button><span id="stitle"></span><small id="shint" hidden>Blank screen? That site doesn’t allow being shown here.</small></div><iframe id="frame" title="Game" sandbox="allow-scripts allow-pointer-lock allow-forms" allow="autoplay; fullscreen; gamepad"></iframe></div>
+<script>
+const $=i=>document.getElementById(i);
+const h=(t,a={},...c)=>{const e=document.createElement(t);for(const k in a){if(k==='class')e.className=a[k];else if(k.startsWith('on'))e.addEventListener(k.slice(2),a[k]);else e.setAttribute(k,a[k])}e.append(...c);return e};
+const HOSTS={pc:['My PC (Moonlight)','The address of your streaming page or app link'],steam:['Steam Link','e.g. steam://rungameid/1091500'],parsec:['Parsec','Your Parsec link, e.g. https://web.parsec.app'],gfn:['GeForce NOW','e.g. https://play.geforcenow.com'],xcloud:['Xbox Cloud Gaming','e.g. https://www.xbox.com/play'],web:['Browser game','The game’s web address'],other:['Other','Any http or https link'],file:['Files on this device','']};
+const OK=['http:','https:','steam:','parsec:','moonlight:'];
+const LS='anywhere-play:games';
+let games=[],col=null,filter='all';
+const lsGet=()=>{try{return JSON.parse(localStorage.getItem(LS)||'[]')}catch(e){return[]}};
+const lsSet=()=>{try{localStorage.setItem(LS,JSON.stringify(games))}catch(e){}};
+const st=m=>{$('st').textContent=m};
+const hue=s=>{let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))%360;return x};
+function okUrl(s){s=s.trim();if(!/^[a-z][a-z0-9+.-]*:/i.test(s))s='https://'+s;try{const u=new URL(s);return OK.includes(u.protocol)?u.href:null}catch(e){return null}}
+async function cap(){return null}
+async function add(g){if(col){try{await col.add(g)}catch(e){st('Could not save. Try again.')}}else{games.unshift({...g,id:'l'+Date.now()});lsSet();render()}}
+async function del(id){idbDel(id);if(col){try{await col.doc(id).delete()}catch(e){st('Could not remove. Try again.')}}else{games=games.filter(x=>x.id!==id);lsSet();render()}}
+function tile(g){
+ const u=okUrl(g.url||''),web=u&&/^https?:/.test(u),name=g.title||'';
+ const art=h('div',{class:'art'},h('b',{},name.trim().charAt(0).toUpperCase()||'?'),h('span',{},(HOSTS[g.host]||HOSTS.other)[0]));
+ art.style.setProperty('--h',hue(name));
+ let armed=0;
+ const rm=h('button',{class:'rm',onclick:()=>{if(!armed){armed=1;rm.textContent='Tap again to remove';setTimeout(()=>{armed=0;rm.textContent='Remove'},3000)}else del(g.id)}},'Remove');
+ let play;if(g.local){play=h('button',{class:'play',onclick:()=>playLocal(g,play)},'Play');idbHas(g.id).then(ok=>{if(!ok){play.disabled=true;play.textContent='Files not on this device'}})}else if(web)play=h('button',{class:'play',onclick:()=>showGame(g.title,{src:u})},'Play');else play=u?h('a',{class:'play',href:u},'Play'):h('span',{class:'bad'},'Link is not valid');
+ return h('article',{class:'tile'},art,h('h3',{},name),play,rm);
+}
+const empty=()=>h('div',{class:'empty'},h('h2',{},'No games yet'),h('p',{},'Add a game with the link that launches it: a Steam, Parsec, GeForce NOW or browser-game address.'),h('button',{class:'btn',onclick:openDlg},'Add your first game'));
+function render(){
+ const hs=[...new Set(games.map(g=>g.host))];
+ if(filter!=='all'&&!hs.includes(filter))filter='all';
+ $('chips').replaceChildren(...(hs.length>1?['all',...hs]:[]).map(k=>h('button',{class:'chip'+(k===filter?' on':''),'aria-pressed':String(k===filter),onclick:()=>{filter=k;render()}},k==='all'?'All':(HOSTS[k]||HOSTS.other)[0])));
+ const list=games.filter(g=>filter==='all'||g.host===filter);
+ $('grid').replaceChildren(...(games.length?list.map(tile):[empty()]));
+}
+function hint(){$('hint').textContent=HOSTS[$('w').value][1]}
+function openDlg(){$('f').reset();$('w').value='pc';hint();$('err').textContent='';$('dlg').showModal();$('t').focus()}
+for(const k in HOSTS)if(k!=='file')$('w').append(h('option',{value:k},HOSTS[k][0]));
+$('w').onchange=hint;
+$('addBtn').onclick=openDlg;
+$('cx').onclick=()=>$('dlg').close();
+$('f').onsubmit=async e=>{e.preventDefault();if($('fl').files.length)return submitFiles();const url=okUrl($('u').value);if(!url){$('err').textContent='Enter a valid play link, or choose game files.';return}
+ const g={title:$('t').value.trim(),host:$('w').value,url,added:Date.now()};$('dlg').close();await add(g)};
+async function boot(){
+ games=lsGet();render();
+ const [db,us]=await Promise.all([cap('db'),cap('user')]);
+ let id=null;try{id=us?await us.id():null}catch(e){}
+ if(!db||!id){st('Saved in this browser only.');return}
+ col=db.collection('data/users/'+id);
+ try{for(const g of lsGet()){const{id:_,...r}=g;await col.add(r)}localStorage.removeItem(LS)}catch(e){}
+ col.orderBy('added','desc').onSnapshot(s=>{games=s.docs.map(d=>({...d.data(),id:d.id}));st('Synced to your account');render()},()=>{col=null;games=lsGet();st('Saved on this device only');render()});
+}
+let dbp;const idb=()=>dbp||(dbp=new Promise((ok,no)=>{const r=indexedDB.open('anywhere-play',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}));
+const idbDo=async(mode,fn)=>{const d=await idb();return new Promise((ok,no)=>{const t=d.transaction('f',mode),q=fn(t.objectStore('f'));t.oncomplete=()=>ok(q&&q.result);t.onerror=t.onabort=()=>no(t.error)})};
+const idbPut=(k,v)=>idbDo('readwrite',s=>s.put(v,k));
+const idbDel=k=>idbDo('readwrite',s=>s.delete(k)).catch(()=>{});
+const idbGet=k=>idbDo('readonly',s=>s.get(k));
+const idbHas=k=>idbDo('readonly',s=>s.getKey(k)).then(r=>r!==undefined,()=>false);
+const MT={js:'text/javascript',css:'text/css',json:'application/json',png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',svg:'image/svg+xml',mp3:'audio/mpeg',ogg:'audio/ogg',wav:'audio/wav',mp4:'video/mp4',webm:'video/webm',woff:'font/woff',woff2:'font/woff2',ttf:'font/ttf',otf:'font/otf'};
+const mime=p=>MT[p.split('.').pop().toLowerCase()]||'application/octet-stream';
+const SHIM="try{localStorage.getItem('k')}catch(e){(function(){var m={},s={getItem:function(k){return k in m?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null}};Object.defineProperty(s,'length',{get:function(){return Object.keys(m).length}});['localStorage','sessionStorage'].forEach(function(n){Object.defineProperty(window,n,{value:s,configurable:true})})})()}";
+async function readFiles(files){
+ const out=[];let size=0;
+ for(const f of files){
+  size+=f.size;if(size>250*1024*1024)throw new Error('Too big. Keep the files under 250 MB in total.');
+  const n=f.name.toLowerCase();
+  if(/\.(rar|7z)$/.test(n))throw new Error('Can’t unpack .rar or .7z here. Re-save it as .zip and add it again.');
+  if(n.endsWith('.zip')){
+   if(!window.JSZip)throw new Error('Zip support didn’t load. Reload the page and try again.');
+   const z=await JSZip.loadAsync(f);
+   for(const k in z.files){const e=z.files[k];if(!e.dir&&!/(^|\/)(__MACOSX|\.DS_Store)/.test(k))out.push({p:k,b:await e.async('arraybuffer')})}
+  }else out.push({p:f.webkitRelativePath||f.name,b:await f.arrayBuffer()});
+ }
+ if(!out.some(e=>/\.html?$/i.test(e.p)))throw new Error('No .html file found. This page plays HTML5 games: add an .html file or a .zip that contains one.');
+ return out;
+}
+async function build(ent){
+ const map=new Map(),by=new Map(),dec=new TextDecoder();
+ for(const e of ent){const k=e.p.toLowerCase();map.set(k,e);const n=k.split('/').pop();if(!by.has(n))by.set(n,e)}
+ const idx=e=>/(^|\/)index\.html?$/i.test(e.p)?0:1;
+ const main=ent.filter(e=>/\.html?$/i.test(e.p)).sort((a,b)=>idx(a)-idx(b)||a.p.split('/').length-b.p.split('/').length)[0];
+ const dir=p=>p.slice(0,p.lastIndexOf('/')+1);
+ const look=(base,ref)=>{if(!ref||/^(data:|blob:|https?:|\/\/|#)/i.test(ref))return null;let r=ref.split(/[?#]/)[0];try{r=decodeURIComponent(r)}catch(x){}const out=[];for(const s of(r.startsWith('/')?r:base+r).split('/')){if(s==='..')out.pop();else if(s&&s!=='.')out.push(s)}return map.get(out.join('/').toLowerCase())||by.get((out[out.length-1]||'').toLowerCase())||null};
+ const uri=e=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(new Blob([e.b],{type:mime(e.p)}))});
+ const css=async(t,base)=>{for(const m of[...t.matchAll(/url\(\s*(['"]?)([^'")]+)\1\s*\)/g)]){const e=look(base,m[2]);if(e)t=t.replace(m[0],'url('+await uri(e)+')')}return t};
+ const doc=new DOMParser().parseFromString(dec.decode(main.b),'text/html'),base=dir(main.p);
+ for(const s of[...doc.querySelectorAll('script[src]')]){const e=look(base,s.getAttribute('src'));if(!e)continue;const n=doc.createElement('script');if(s.type)n.type=s.type;n.textContent=dec.decode(e.b).replace(/<\/script/gi,'<\\/script');s.replaceWith(n)}
+ for(const l of[...doc.querySelectorAll('link[rel~=stylesheet][href]')]){const e=look(base,l.getAttribute('href'));if(!e)continue;const n=doc.createElement('style');n.textContent=await css(dec.decode(e.b),dir(e.p));l.replaceWith(n)}
+ for(const el of[...doc.querySelectorAll('img[src],audio[src],video[src],source[src],link[rel~=icon][href]')]){const a=el.hasAttribute('src')?'src':'href',e=look(base,el.getAttribute(a));if(e)el.setAttribute(a,await uri(e))}
+ const sh=doc.createElement('script');sh.textContent=SHIM;doc.head.prepend(sh);
+ return'<!doctype html>'+doc.documentElement.outerHTML;
+}
+async function submitFiles(){
+ const g={title:$('t').value.trim(),host:'file',local:1,added:Date.now()};
+ $('err').textContent='Adding…';
+ try{const ent=await readFiles([...$('fl').files]);
+  if(col){const r=col.doc();await idbPut(r.id,ent);await r.set(g)}
+  else{g.id='l'+Date.now();await idbPut(g.id,ent);games.unshift(g);lsSet();render()}
+  $('dlg').close()}
+ catch(e){$('err').textContent=(e&&e.message)||'Could not save. Your browser may be out of space.'}
+}
+async function playLocal(g,btn){
+ const old=btn.textContent;
+ try{const ent=await idbGet(g.id);showGame(g.title,{doc:await build(ent)})}
+ catch(e){btn.textContent='Could not open';setTimeout(()=>{btn.textContent=old},3000)}
+}
+$('fl').onchange=()=>{const f=$('fl').files[0];if(f&&!$('t').value)$('t').value=f.name.replace(/\.[^.]+$/,'')};
+$('back').onclick=()=>{$('frame').removeAttribute('src');$('frame').srcdoc='';$('stage').hidden=true};
+function showGame(t,o){
+ const f=$('frame'),web=o.doc===undefined;
+ f.removeAttribute('src');f.removeAttribute('srcdoc');
+ f.setAttribute('sandbox',web?'allow-scripts allow-same-origin allow-pointer-lock allow-forms':'allow-scripts allow-pointer-lock allow-forms');
+ if(web)f.src=o.src;else f.srcdoc=o.doc;
+ $('stitle').textContent=t||'';$('shint').hidden=!web;$('stage').hidden=false;f.focus();
+}
+document.addEventListener('securitypolicyviolation',e=>{if(!$('stage').hidden&&/frame|child/.test(e.effectiveDirective||e.violatedDirective))$('stitle').textContent='Blocked: this page can’t show that site.'});
+boot();
+</script>
+</body></html>
